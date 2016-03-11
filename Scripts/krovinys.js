@@ -1,13 +1,14 @@
 ﻿// MAIN
-
 // standard global variables
-var container, scene, camera, renderer, controls, stats;
+var container,
+    scene,
+    camera,
+    renderer,
+    controls,
+    stats;
+
 var clock = new THREE.Clock();
-
 var keyboard = new KeyboardState();
-
-// custom global variables
-var mesh;
 
 init();
 animate();
@@ -19,20 +20,23 @@ function init()
     scene = new THREE.Scene();
     // CAMERA
     var SCREEN_WIDTH = window.innerWidth, SCREEN_HEIGHT = window.innerHeight;
-    var VIEW_ANGLE = 45, ASPECT = SCREEN_WIDTH / SCREEN_HEIGHT, NEAR = 1, FAR = 200000;
+    var VIEW_ANGLE = 45, ASPECT = SCREEN_WIDTH / SCREEN_HEIGHT, NEAR = 50, FAR = 2000000;
     camera = new THREE.PerspectiveCamera( VIEW_ANGLE, ASPECT, NEAR, FAR);
     scene.add(camera);
     camera.position.set(-1500, 5600, -200);
-    //camera.lookAt(scene.position);
-   // camera.lookAt(scene.position);
+
     // RENDERER
-    if ( Detector.webgl )
-        renderer = new THREE.WebGLRenderer( {antialias:true} );
-    else
+    if ( Detector.webgl ) {
+        renderer = new THREE.WebGLRenderer({antialias: true});
+    }
+    else {
         renderer = new THREE.CanvasRenderer();
+    }
+
     renderer.setSize(SCREEN_WIDTH, SCREEN_HEIGHT);
     container = document.getElementById( 'ThreeJS' );
     container.appendChild( renderer.domElement );
+
     // EVENTS
     THREEx.WindowResize(renderer, camera);
     THREEx.FullScreen.bindKey({ charCode : 'm'.charCodeAt(0) });
@@ -54,60 +58,31 @@ function init()
    light.position.set(0, 2000, 1000).normalize();
    scene.add(light);
 
-
- 
     // FLOOR
-    
     var loader = new THREE.TextureLoader();
-    
     // load a resource
+
+
+    // KELIAS
     loader.load(
         // resource URL
-        'images/street3.jpg',
+        'images/kelias/kelias.jpg',
         // Function when resource is loaded
         function (texture) {
             // do something with the texture
             texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
-            texture.repeat.set(1, 1);
+            texture.repeat.set(2, 10);
             var material = new THREE.MeshBasicMaterial({
                 map: texture,
                 side: THREE.DoubleSide
             });
 
-            var geometry = new THREE.PlaneGeometry(4000, 40000, 10, 10);
+            var geometry = new THREE.PlaneGeometry(40000, 200000, 10, 10);
             var floor = new THREE.Mesh(geometry, material);
-            floor.position.y = -1850;
-            floor.rotation.x = Math.PI / 2;
-            scene.add(floor);
 
-        },
-        // Function called when download progresses
-        function (xhr) {
-            console.log((xhr.loaded / xhr.total * 100) + '% loaded');
-        },
-        // Function called when download errors
-        function (xhr) {
-            console.log('An error happened');
-        }
-    );
-    // load a resource
-    loader.load(
-        // resource URL
-        'images/grass.jpg',
-        // Function when resource is loaded
-        function (texture) {
-            // do something with the texture
-            texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
-            texture.repeat.set(2, 2);
-            var material = new THREE.MeshBasicMaterial({
-                map: texture,
-                side: THREE.DoubleSide
-            });
-
-            var geometry = new THREE.PlaneGeometry(40000, 40000, 10, 10);
-            var floor = new THREE.Mesh(geometry, material);
             floor.position.y = -1900;
             floor.rotation.x = Math.PI / 2;
+
             scene.add(floor);
 
         },
@@ -120,6 +95,45 @@ function init()
             console.log('An error happened');
         }
     );
+    // ZOLE
+    loader.load(
+        // resource URL
+        'images/out.jpg',
+        // Function when resource is loaded
+        function (texture) {
+            // do something with the texture
+            texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
+            texture.repeat.set(2, 10);
+            var material = new THREE.MeshBasicMaterial({
+                map: texture,
+                side: THREE.DoubleSide
+            });
+
+            var geometry = new THREE.PlaneGeometry(500000, 400000, 10, 10);
+
+            var grass = new THREE.Mesh(geometry, material);
+            grass.position.y = -2400;
+            grass.rotation.x = Math.PI / 2;
+
+            grass.position.x += 40000;
+
+
+           // grass.position.z += floor.geometry.parameters.width * 4;
+
+            scene.add(grass);
+        },
+        // Function called when download progresses
+        function (xhr) {
+            console.log((xhr.loaded / xhr.total * 100) + '% loaded');
+        },
+        // Function called when download errors
+        function (xhr) {
+            console.log('An error happened');
+        }
+    );
+
+
+
     // PAKLOTAS KROVINIUI
     loader.load(
         // resource URL
@@ -156,7 +170,7 @@ function init()
         }
     );
 
-    // PAKLOTAS KROVINIUI
+    // FUROS PRIEKABA
     loader.load(
         // resource URL
         'images/son.jpg',
@@ -197,26 +211,17 @@ function init()
         }
     );
 
-
-    // SKYBOX
-
-
-   // var axes = new THREE.AxisHelper(100);
-    //scene.add(axes);
-
-    
-    
-    // load a resource
+    // SIENOS
     loader.load(
         // resource URL
-        'images/si.jpg',
+        'images/pp.jpg',
         // Function when resource is loaded
         function (texture) {
             // do something with the texture
            // var imagePrefix = "images/sky/";
            // var directions = ["posx", "negx", "posy", "negy", "posz", "negz"];
            // var imageSuffix = ".jpg";
-            var skyGeometry = new THREE.CubeGeometry(40000, 40000, 40000);
+            var skyGeometry = new THREE.CubeGeometry(400000, 400000, 400000);
             texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
             texture.repeat.set(5, 5);
 
@@ -241,7 +246,57 @@ function init()
             console.log('An error happened');
         }
     );
-    
+
+
+    // KONTEINERIS
+    loader.load(
+        // resource URL
+        'images/konteineris.png',
+        // Function when resource is loaded
+        function (texture) {
+            // do something with the texture
+            // var imagePrefix = "images/sky/";
+            // var directions = ["posx", "negx", "posy", "negy", "posz", "negz"];
+            // var imageSuffix = ".jpg";
+            var skyGeometry = new THREE.CubeGeometry(10000, 10000, 60000);
+            texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
+            texture.repeat.set(1, 1);
+
+
+            var materialArray = [];
+            var skyBox = [];
+
+
+            for (var i = 0; i < 6; i++)
+                materialArray.push(new THREE.MeshBasicMaterial({
+                    map: texture,
+                    side: THREE.DoubleSide
+                }));
+            var skyGeometry = new THREE.CubeGeometry(10000, 10000, 60000);
+            var skyMaterial = new THREE.MeshFaceMaterial(materialArray);
+            for(var i=0; i < 10; i++){
+
+
+            skyBox[i] = new THREE.Mesh(skyGeometry, skyMaterial);
+            skyBox[i].position.x += 25000;
+                skyBox[i].position.z += 40000;
+                skyBox[i].position.y = 2400;
+
+            scene.add(skyBox[i]);
+                }
+
+        },
+        // Function called when download progresses
+        function (xhr) {
+            console.log((xhr.loaded / xhr.total * 100) + '% loaded');
+        },
+        // Function called when download errors
+        function (xhr) {
+            console.log('An error happened');
+        }
+    );
+
+
     /////////////////
     // IMPORT MODEL//
     /////////////////
@@ -266,7 +321,7 @@ function init()
     /// 
     ///  DEZES
     ///
-   /// var test = "" + { "x": 1000, "y": 1100, "z": 1200, "posX": 0, "posY": 0, "posZ": 0, "tipas": "Batonas" } | { "x": 1000, "y": 1100, "z": 1200, "posX": 0, "posY": 1100, "posZ": 0, "tipas": "Batonas" } | { "x": 1000, "y": 1100, "z": 1200, "posX": 1000, "posY": 0, "posZ": 0, "tipas": "Batonas" } | { "x": 1000, "y": 1100, "z": 1200, "posX": 1000, "posY": 1100, "posZ": 0, "tipas": "Batonas" } | { "x": 1000, "y": 1100, "z": 1200, "posX": 0, "posY": 0, "posZ": 1200, "tipas": "Batonas" } | { "x": 1000, "y": 1100, "z": 1200, "posX": 0, "posY": 1100, "posZ": 1200, "tipas": "Batonas" } | { "x": 1000, "y": 1100, "z": 1200, "posX": 1000, "posY": 0, "posZ": 1200, "tipas": "Batonas" } | { "x": 1000, "y": 1100, "z": 1200, "posX": 1000, "posY": 1100, "posZ": 1200, "tipas": "Batonas" } | { "x": 1000, "y": 1100, "z": 1200, "posX": 0, "posY": 0, "posZ": 2400, "tipas": "Batonas" } | { "x": 1000, "y": 1100, "z": 1200, "posX": 0, "posY": 1100, "posZ": 2400, "tipas": "Batonas" } | { "x": 1000, "y": 1100, "z": 1200, "posX": 1000, "posY": 0, "posZ": 2400, "tipas": "Batonas" } | { "x": 1000, "y": 1100, "z": 1200, "posX": 1000, "posY": 1100, "posZ": 2400, "tipas": "Batonas" } | { "x": 1000, "y": 1100, "z": 1200, "posX": 0, "posY": 0, "posZ": 3600, "tipas": "Batonas" } | { "x": 1000, "y": 1100, "z": 1200, "posX": 0, "posY": 1100, "posZ": 3600, "tipas": "Batonas" } | { "x": 1000, "y": 1100, "z": 1200, "posX": 1000, "posY": 0, "posZ": 3600, "tipas": "Batonas" } | { "x": 700, "y": 700, "z": 1200, "posX": 1000, "posY": 1100, "posZ": 3600, "tipas": "Batonas" } | { "x": 700, "y": 700, "z": 1200, "posX": 1000, "posY": 1800, "posZ": 3600, "tipas": "Batonas" } | { "x": 700, "y": 700, "z": 1200, "posX": 0, "posY": 0, "posZ": 4800, "tipas": "Batonas" } | { "x": 700, "y": 700, "z": 1200, "posX": 0, "posY": 700, "posZ": 4800, "tipas": "Batonas" } | { "x": 700, "y": 700, "z": 1200, "posX": 0, "posY": 1400, "posZ": 4800, "tipas": "Batonas" } | { "x": 700, "y": 700, "z": 1200, "posX": 700, "posY": 0, "posZ": 4800, "tipas": "Batonas" } | { "x": 700, "y": 700, "z": 1200, "posX": 700, "posY": 700, "posZ": 4800, "tipas": "Batonas" } | { "x": 700, "y": 700, "z": 1200, "posX": 700, "posY": 1400, "posZ": 4800, "tipas": "Batonas" } | { "x": 700, "y": 700, "z": 1200, "posX": 1400, "posY": 0, "posZ": 4800, "tipas": "Batonas" } | { "x": 700, "y": 700, "z": 1200, "posX": 1400, "posY": 700, "posZ": 4800, "tipas": "Batonas" } | { "x": 700, "y": 700, "z": 1200, "posX": 1400, "posY": 1400, "posZ": 4800, "tipas": "Batonas" } | { "x": 700, "y": 700, "z": 1200, "posX": 0, "posY": 0, "posZ": 6000, "tipas": "Batonas" } | { "x": 700, "y": 700, "z": 1200, "posX": 0, "posY": 700, "posZ": 6000, "tipas": "Batonas" } | { "x": 700, "y": 700, "z": 1200, "posX": 0, "posY": 1400, "posZ": 6000, "tipas": "Batonas" } | { "x": 700, "y": 700, "z": 1200, "posX": 700, "posY": 0, "posZ": 6000, "tipas": "Batonas" } | { "x": 1200, "y": 800, "z": 1000, "posX": 0, "posY": 0, "posZ": 7200, "tipas": "Duona" } | { "x": 1200, "y": 800, "z": 1000, "posX": 0, "posY": 800, "posZ": 7200, "tipas": "Duona" } | { "x": 1200, "y": 800, "z": 1000, "posX": 0, "posY": 1600, "posZ": 7200, "tipas": "Duona" } | { "x": 1200, "y": 800, "z": 1000, "posX": 1200, "posY": 0, "posZ": 7200, "tipas": "Duona" } | { "x": 1200, "y": 800, "z": 1000, "posX": 1200, "posY": 800, "posZ": 7200, "tipas": "Duona" } | { "x": 1200, "y": 800, "z": 1000, "posX": 1200, "posY": 1600, "posZ": 7200, "tipas": "Duona" } | { "x": 1200, "y": 800, "z": 1000, "posX": 0, "posY": 0, "posZ": 8200, "tipas": "Duona" } | { "x": 1200, "y": 800, "z": 1000, "posX": 0, "posY": 800, "posZ": 8200, "tipas": "Duona" } | { "x": 1200, "y": 800, "z": 1000, "posX": 0, "posY": 1600, "posZ": 8200, "tipas": "Duona" } | { "x": 1200, "y": 800, "z": 1000, "posX": 1200, "posY": 0, "posZ": 8200, "tipas": "Duona" } | { "x": 1200, "y": 800, "z": 1000, "posX": 1200, "posY": 800, "posZ": 8200, "tipas": "Duona" } | { "x": 1200, "y": 800, "z": 1000, "posX": 1200, "posY": 1600, "posZ": 8200, "tipas": "Duona" } | { "x": 1200, "y": 800, "z": 1000, "posX": 0, "posY": 0, "posZ": 9200, "tipas": "Duona" } | { "x": 600, "y": 1000, "z": 800, "posX": 700, "posY": 700, "posZ": 6000, "tipas": "Cukrus" } | { "x": 600, "y": 1000, "z": 800, "posX": 700, "posY": 1700, "posZ": 6000, "tipas": "Cukrus" } | { "x": 600, "y": 1000, "z": 800, "posX": 1400, "posY": 0, "posZ": 6000, "tipas": "Cukrus" } | { "x": 600, "y": 1000, "z": 800, "posX": 1400, "posY": 1000, "posZ": 6000, "tipas": "Cukrus" } | { "x": 600, "y": 1000, "z": 800, "posX": 0, "posY": 800, "posZ": 9200, "tipas": "Cukrus" } | { "x": 600, "y": 1000, "z": 800, "posX": 600, "posY": 800, "posZ": 9200, "tipas": "Cukrus" } | { "x": 600, "y": 1000, "z": 800, "posX": 1200, "posY": 0, "posZ": 9200, "tipas": "Cukrus" } | { "x": 600, "y": 1000, "z": 800, "posX": 1200, "posY": 1000, "posZ": 9200, "tipas": "Cukrus" } | { "x": 600, "y": 1000, "z": 800, "posX": 1800, "posY": 0, "posZ": 9200, "tipas": "Cukrus" } | { "x": 600, "y": 1000, "z": 800, "posX": 1800, "posY": 1000, "posZ": 9200, "tipas": "Cukrus" } | { "x": 600, "y": 1000, "z": 800, "posX": 0, "posY": 0, "posZ": 10200, "tipas": "Cukrus" } | { "x": 600, "y": 1000, "z": 800, "posX": 0, "posY": 1000, "posZ": 10200, "tipas": "Cukrus" }+"";
+
     var deze = [{ "x": 1000, "y": 1100, "z": 1200, "posX": 0, "posY": 0, "posZ": 0, "tipas": "Batonas" }, { "x": 1000, "y": 1100, "z": 1200, "posX": 0, "posY": 1100, "posZ": 0, "tipas": "Batonas" }, { "x": 1000, "y": 1100, "z": 1200, "posX": 1000, "posY": 0, "posZ": 0, "tipas": "Batonas" }, { "x": 1000, "y": 1100, "z": 1200, "posX": 1000, "posY": 1100, "posZ": 0, "tipas": "Batonas" }, { "x": 1000, "y": 1100, "z": 1200, "posX": 0, "posY": 0, "posZ": 1200, "tipas": "Batonas" }, { "x": 1000, "y": 1100, "z": 1200, "posX": 0, "posY": 1100, "posZ": 1200, "tipas": "Batonas" }, { "x": 1000, "y": 1100, "z": 1200, "posX": 1000, "posY": 0, "posZ": 1200, "tipas": "Batonas" }, { "x": 1000, "y": 1100, "z": 1200, "posX": 1000, "posY": 1100, "posZ": 1200, "tipas": "Batonas" }, { "x": 1000, "y": 1100, "z": 1200, "posX": 0, "posY": 0, "posZ": 2400, "tipas": "Batonas" }, { "x": 1000, "y": 1100, "z": 1200, "posX": 0, "posY": 1100, "posZ": 2400, "tipas": "Batonas" }, { "x": 1000, "y": 1100, "z": 1200, "posX": 1000, "posY": 0, "posZ": 2400, "tipas": "Batonas" }, { "x": 1000, "y": 1100, "z": 1200, "posX": 1000, "posY": 1100, "posZ": 2400, "tipas": "Batonas" }, { "x": 1000, "y": 1100, "z": 1200, "posX": 0, "posY": 0, "posZ": 3600, "tipas": "Batonas" }, { "x": 1000, "y": 1100, "z": 1200, "posX": 0, "posY": 1100, "posZ": 3600, "tipas": "Batonas" }, { "x": 1000, "y": 1100, "z": 1200, "posX": 1000, "posY": 0, "posZ": 3600, "tipas": "Batonas" }, { "x": 700, "y": 700, "z": 1200, "posX": 1000, "posY": 1100, "posZ": 3600, "tipas": "Batonas" }, { "x": 700, "y": 700, "z": 1200, "posX": 1000, "posY": 1800, "posZ": 3600, "tipas": "Batonas" }, { "x": 700, "y": 700, "z": 1200, "posX": 0, "posY": 0, "posZ": 4800, "tipas": "Batonas" }, { "x": 700, "y": 700, "z": 1200, "posX": 0, "posY": 700, "posZ": 4800, "tipas": "Batonas" }, { "x": 700, "y": 700, "z": 1200, "posX": 0, "posY": 1400, "posZ": 4800, "tipas": "Batonas" }, { "x": 700, "y": 700, "z": 1200, "posX": 700, "posY": 0, "posZ": 4800, "tipas": "Batonas" }, { "x": 700, "y": 700, "z": 1200, "posX": 700, "posY": 700, "posZ": 4800, "tipas": "Batonas" }, { "x": 700, "y": 700, "z": 1200, "posX": 700, "posY": 1400, "posZ": 4800, "tipas": "Batonas" }, { "x": 700, "y": 700, "z": 1200, "posX": 1400, "posY": 0, "posZ": 4800, "tipas": "Batonas" }, { "x": 700, "y": 700, "z": 1200, "posX": 1400, "posY": 700, "posZ": 4800, "tipas": "Batonas" }, { "x": 700, "y": 700, "z": 1200, "posX": 1400, "posY": 1400, "posZ": 4800, "tipas": "Batonas" }, { "x": 700, "y": 700, "z": 1200, "posX": 0, "posY": 0, "posZ": 6000, "tipas": "Batonas" }, { "x": 700, "y": 700, "z": 1200, "posX": 0, "posY": 700, "posZ": 6000, "tipas": "Batonas" }, { "x": 700, "y": 700, "z": 1200, "posX": 0, "posY": 1400, "posZ": 6000, "tipas": "Batonas" }, { "x": 700, "y": 700, "z": 1200, "posX": 700, "posY": 0, "posZ": 6000, "tipas": "Batonas" }, { "x": 1200, "y": 800, "z": 1000, "posX": 0, "posY": 0, "posZ": 7200, "tipas": "Duona" }, { "x": 1200, "y": 800, "z": 1000, "posX": 0, "posY": 800, "posZ": 7200, "tipas": "Duona" }, { "x": 1200, "y": 800, "z": 1000, "posX": 0, "posY": 1600, "posZ": 7200, "tipas": "Duona" }, { "x": 1200, "y": 800, "z": 1000, "posX": 1200, "posY": 0, "posZ": 7200, "tipas": "Duona" }, { "x": 1200, "y": 800, "z": 1000, "posX": 1200, "posY": 800, "posZ": 7200, "tipas": "Duona" }, { "x": 1200, "y": 800, "z": 1000, "posX": 1200, "posY": 1600, "posZ": 7200, "tipas": "Duona" }, { "x": 1200, "y": 800, "z": 1000, "posX": 0, "posY": 0, "posZ": 8200, "tipas": "Duona" }, { "x": 1200, "y": 800, "z": 1000, "posX": 0, "posY": 800, "posZ": 8200, "tipas": "Duona" }, { "x": 1200, "y": 800, "z": 1000, "posX": 0, "posY": 1600, "posZ": 8200, "tipas": "Duona" }, { "x": 1200, "y": 800, "z": 1000, "posX": 1200, "posY": 0, "posZ": 8200, "tipas": "Duona" }, { "x": 1200, "y": 800, "z": 1000, "posX": 1200, "posY": 800, "posZ": 8200, "tipas": "Duona" }, { "x": 1200, "y": 800, "z": 1000, "posX": 1200, "posY": 1600, "posZ": 8200, "tipas": "Duona" }, { "x": 1200, "y": 800, "z": 1000, "posX": 0, "posY": 0, "posZ": 9200, "tipas": "Duona" }, { "x": 600, "y": 1000, "z": 800, "posX": 700, "posY": 700, "posZ": 6000, "tipas": "Cukrus" }, { "x": 600, "y": 1000, "z": 800, "posX": 700, "posY": 1700, "posZ": 6000, "tipas": "Cukrus" }, { "x": 600, "y": 1000, "z": 800, "posX": 1400, "posY": 0, "posZ": 6000, "tipas": "Cukrus" }, { "x": 600, "y": 1000, "z": 800, "posX": 1400, "posY": 1000, "posZ": 6000, "tipas": "Cukrus" }, { "x": 600, "y": 1000, "z": 800, "posX": 0, "posY": 800, "posZ": 9200, "tipas": "Cukrus" }, { "x": 600, "y": 1000, "z": 800, "posX": 600, "posY": 800, "posZ": 9200, "tipas": "Cukrus" }, { "x": 600, "y": 1000, "z": 800, "posX": 1200, "posY": 0, "posZ": 9200, "tipas": "Cukrus" }, { "x": 600, "y": 1000, "z": 800, "posX": 1200, "posY": 1000, "posZ": 9200, "tipas": "Cukrus" }, { "x": 600, "y": 1000, "z": 800, "posX": 1800, "posY": 0, "posZ": 9200, "tipas": "Cukrus" }, { "x": 600, "y": 1000, "z": 800, "posX": 1800, "posY": 1000, "posZ": 9200, "tipas": "Cukrus" }, { "x": 600, "y": 1000, "z": 800, "posX": 0, "posY": 0, "posZ": 10200, "tipas": "Cukrus" }, { "x": 600, "y": 1000, "z": 800, "posX": 0, "posY": 1000, "posZ": 10200, "tipas": "Cukrus" }
 ];
     //var testSegments = test2.split("|");
@@ -274,106 +329,106 @@ function init()
     //for (i = 0; i < testSegments.length; i++) {
      //   deze.push(JSON.parse(testSegments[i]));
     //}
-       
+    // DEZES TEKSTUROS
     loader.load(
         // resource URL
-        'images/box.jpg',
+        'images/zeme.jpg',
         // Function when resource is loaded
         function (texture) {
             // do something with the texture
             texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
             texture.repeat.set(1, 1);
 
+            var boxTexture = loader.load('images/box.jpg');
+            var box2Texture = loader.load('images/box2.jpg');
             var meshes = [];
             var dynamicTexture = [];
-            for (index = 0; index < deze.length; index++) {
+
+            for (var index = 0; index < deze.length; index++) {
 
                 dynamicTexture[index] = new THREEx.DynamicTexture(256, 256);
                 dynamicTexture[index].context.font = "bolder 40px Verdana";
-
                 var material = new THREE.MeshBasicMaterial({
                     //color: Math.random() * 0xffffff,
-                   // transparent: true,
-                   // opacity: 0.5,
-                   // overdraw: 0.5,
+                    //transparent: true,
+                    //opacity: 0.5,
+                    // overdraw: 0.5,
                     map: dynamicTexture[index].texture
                     
 
                 });
-                dynamicTexture[index].clear('white').drawText(''+deze[index].tipas, undefined, 128, 'red');
-                //dynamicTexture[index].clear('cyan').drawText('(' + deze[index].posX + ', ' + deze[index].posY +', '+ deze[index].posZ+');', undefined, 256, 'red');
+                // Dynamic texture
+                dynamicTexture[index].clear('white').drawText(''+deze[index].tipas, undefined, 128, 'black');
+
                 var geometry = new THREE.BoxGeometry(deze[index].x, deze[index].y, deze[index].z);
 
-
                 if (deze[index].tipas == 'Batonas') {
-                    var materials = [
-      new THREE.MeshBasicMaterial({
-          map: loader.load('images/box2.jpg')
-      }),
-      new THREE.MeshBasicMaterial({
-          map: loader.load('images/box2.jpg')
-      }),
-      new THREE.MeshBasicMaterial({
-          map: dynamicTexture[index].texture
-      }),
-      new THREE.MeshBasicMaterial({
-          map: loader.load('images/box2.jpg')
-      }),
-      new THREE.MeshBasicMaterial({
-          map: loader.load('images/box2.jpg')
-      }),
-      new THREE.MeshBasicMaterial({
-          map: loader.load('images/box2.jpg')
-      })
-                    ];
-
-
-
-
-
-                    meshes[index] = new THREE.Mesh(geometry,
-                        new THREE.MeshFaceMaterial(materials))
+                    var materials = [new THREE.MeshBasicMaterial({ map: boxTexture}),
+                        new THREE.MeshBasicMaterial({
+                            map: boxTexture
+                        }),
+                        new THREE.MeshBasicMaterial({
+                            map: dynamicTexture[index].texture
+                        }),
+                        new THREE.MeshBasicMaterial({
+                            map: boxTexture
+                        }),
+                        new THREE.MeshBasicMaterial({
+                            map: boxTexture
+                        }),
+                        new THREE.MeshBasicMaterial({
+                            map: boxTexture
+                        })];
+                    meshes[index] = new THREE.Mesh(geometry, new THREE.MeshFaceMaterial(materials));
                 }
                 else if (deze[index].tipas == 'Cukrus') {
+                    var materials = [new THREE.MeshBasicMaterial({ map: box2Texture}),
+                        new THREE.MeshBasicMaterial({
 
-                    var materials = [
-       new THREE.MeshBasicMaterial({
-           map: loader.load('images/box.jpg')
-       }),
-       new THREE.MeshBasicMaterial({
-           map: loader.load('images/box.jpg')
-       }),
-       new THREE.MeshBasicMaterial({
-           map: dynamicTexture[index].texture
-       }),
-       new THREE.MeshBasicMaterial({
-           map: loader.load('images/box.jpg')
-       }),
-       new THREE.MeshBasicMaterial({
-           map: loader.load('images/box.jpg')
-       }),
-       new THREE.MeshBasicMaterial({
-           map: loader.load('images/box.jpg')
-       })
-                    ];
+                            map: box2Texture
+                        }),
+                       new THREE.MeshBasicMaterial({
+                           map: dynamicTexture[index].texture
+                       }),
+                       new THREE.MeshBasicMaterial({
+                           map: box2Texture
+                       }),
+                       new THREE.MeshBasicMaterial({
+                           map: box2Texture
+                       }),
+                       new THREE.MeshBasicMaterial({
+                           map: box2Texture
+                       })];
+                    meshes[index] = new THREE.Mesh(geometry, new THREE.MeshFaceMaterial(materials));
+                }
+                else if (deze[index].tipas == 'Duona') {
+                    var materials = [new THREE.MeshBasicMaterial({ map: texture}),
+                        new THREE.MeshBasicMaterial({
 
-
-
-
-
-                    meshes[index] = new THREE.Mesh(geometry,
-                        new THREE.MeshFaceMaterial(materials))
+                            map: texture
+                        }),
+                        new THREE.MeshBasicMaterial({
+                            map: dynamicTexture[index].texture
+                        }),
+                        new THREE.MeshBasicMaterial({
+                            map: texture
+                        }),
+                        new THREE.MeshBasicMaterial({
+                            map: texture
+                        }),
+                        new THREE.MeshBasicMaterial({
+                            map: texture
+                        })];
+                    meshes[index] = new THREE.Mesh(geometry, new THREE.MeshFaceMaterial(materials));
                 }
 
                 else {
                     meshes[index] = new THREE.Mesh(geometry, material);
                 }
 
-
-
                 meshes[index].position.set(deze[index].posX, deze[index].posY, deze[index].posZ);
 
-                edges = new THREE.EdgesHelper(meshes[index], 0x000000);
+                var edges = new THREE.EdgesHelper(meshes[index], 0x000000);
                 scene.add(edges);
                 scene.add(meshes[index]);
                 
