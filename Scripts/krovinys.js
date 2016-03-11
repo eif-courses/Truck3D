@@ -20,11 +20,19 @@ function init()
     scene = new THREE.Scene();
     // CAMERA
     var SCREEN_WIDTH = window.innerWidth, SCREEN_HEIGHT = window.innerHeight;
-    var VIEW_ANGLE = 45, ASPECT = SCREEN_WIDTH / SCREEN_HEIGHT, NEAR = 50, FAR = 2000000;
+    var VIEW_ANGLE = 45, ASPECT = SCREEN_WIDTH / SCREEN_HEIGHT, NEAR = 0.001, FAR = 2000000;
     camera = new THREE.PerspectiveCamera( VIEW_ANGLE, ASPECT, NEAR, FAR);
-    scene.add(camera);
-    camera.position.set(-1500, 5600, -200);
 
+    var light2 = new THREE.PointLight(0xffffff);
+    //light2.position.set(-4,0,0);
+    //scene.add(light2);
+
+    scene.add(camera);
+
+    camera.add(light2);
+    camera.position.set(-4, 0, 0);
+
+    //camera.lookAt(scene);
     // RENDERER
     if ( Detector.webgl ) {
         renderer = new THREE.WebGLRenderer({antialias: true});
@@ -50,13 +58,16 @@ function init()
     stats.domElement.style.zIndex = 100;
     container.appendChild( stats.domElement );
     // LIGHT
-    var light2 = new THREE.PointLight(0xffffff);
-    light2.position.set(100,10000,100);
-    scene.add(light2);
+
 
    var light = new THREE.DirectionalLight(0xffffff);
-   light.position.set(0, 2000, 1000).normalize();
+   light.position.set(0, 20, 0).normalize();
    scene.add(light);
+
+
+    var light3 = new THREE.AmbientLight(0xffffff);
+    light3.position.set(0, 100, 0).normalize();
+    scene.add(light3);
 
     // FLOOR
     var loader = new THREE.TextureLoader();
@@ -71,16 +82,16 @@ function init()
         function (texture) {
             // do something with the texture
             texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
-            texture.repeat.set(2, 10);
+            texture.repeat.set(2, 12);
             var material = new THREE.MeshBasicMaterial({
                 map: texture,
                 side: THREE.DoubleSide
             });
 
-            var geometry = new THREE.PlaneGeometry(40000, 200000, 10, 10);
+            var geometry = new THREE.PlaneGeometry(4, 40, 1, 1);
             var floor = new THREE.Mesh(geometry, material);
 
-            floor.position.y = -1900;
+            floor.position.y = 0;
             floor.rotation.x = Math.PI / 2;
 
             scene.add(floor);
@@ -88,34 +99,36 @@ function init()
         },
         // Function called when download progresses
         function (xhr) {
-            console.log((xhr.loaded / xhr.total * 100) + '% loaded');
+            console.log((xhr.loaded / xhr.total * 100) + '%  KELIAS loaded');
         },
         // Function called when download errors
         function (xhr) {
             console.log('An error happened');
         }
     );
+
+
     // ZOLE
     loader.load(
         // resource URL
-        'images/out.jpg',
+        'images/out.JPG',
         // Function when resource is loaded
         function (texture) {
             // do something with the texture
             texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
-            texture.repeat.set(2, 10);
+            texture.repeat.set(1, 1);
             var material = new THREE.MeshBasicMaterial({
                 map: texture,
                 side: THREE.DoubleSide
             });
 
-            var geometry = new THREE.PlaneGeometry(500000, 400000, 10, 10);
+            var geometry = new THREE.PlaneGeometry(40, 40, 10, 10);
 
             var grass = new THREE.Mesh(geometry, material);
-            grass.position.y = -2400;
+            grass.position.y = -0.02;
             grass.rotation.x = Math.PI / 2;
 
-            grass.position.x += 40000;
+           // grass.position.x += 4;
 
 
            // grass.position.z += floor.geometry.parameters.width * 4;
@@ -137,26 +150,27 @@ function init()
     // PAKLOTAS KROVINIUI
     loader.load(
         // resource URL
-        'images/wi.jpg',
+        'images/padas.jpg',
         // Function when resource is loaded
         function (texture) {
             // do something with the texture
 
-            var skyGeometry = new THREE.CubeGeometry(3000, 1800, 18000);
+            var skyGeometry = new THREE.CubeGeometry(2.5, 0.5, 16);
             texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
-            texture.repeat.set(1, 2);
+            texture.repeat.set(1, 4);
 
 
             var materialArray = [];
             for (var i = 0; i < 6; i++)
                 materialArray.push(new THREE.MeshBasicMaterial({
                     map: texture,
-                    side: THREE.DoubleSide
+                    side: THREE.FrontSide
                 }));
             var skyMaterial = new THREE.MeshFaceMaterial(materialArray);
             var skyBox = new THREE.Mesh(skyGeometry, skyMaterial);
-            skyBox.position.y = -1400;
-            skyBox.position.x = 300;
+           // skyBox.position.y = -1400;
+            skyBox.position.x = 2;
+            skyBox.position.z = 5;
             scene.add(skyBox);
 
         },
@@ -170,6 +184,7 @@ function init()
         }
     );
 
+/*
     // FUROS PRIEKABA
     loader.load(
         // resource URL
@@ -210,6 +225,7 @@ function init()
             console.log('An error happened');
         }
     );
+*/
 
     // SIENOS
     loader.load(
@@ -221,7 +237,7 @@ function init()
            // var imagePrefix = "images/sky/";
            // var directions = ["posx", "negx", "posy", "negy", "posz", "negz"];
            // var imageSuffix = ".jpg";
-            var skyGeometry = new THREE.CubeGeometry(400000, 400000, 400000);
+            var skyGeometry = new THREE.CubeGeometry(40, 40, 40);
             texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
             texture.repeat.set(5, 5);
 
@@ -230,24 +246,79 @@ function init()
             for (var i = 0; i < 6; i++)
                 materialArray.push(new THREE.MeshBasicMaterial({
                     map: texture,
-                    side: THREE.DoubleSide
+                    side: THREE.BackSide
                 }));
             var skyMaterial = new THREE.MeshFaceMaterial(materialArray);
             var skyBox = new THREE.Mesh(skyGeometry, skyMaterial);
+
+            skyBox.position.y = skyBox.geometry.parameters.height / 2 - 2;
+
             scene.add(skyBox);
 
         },
         // Function called when download progresses
         function (xhr) {
-            console.log((xhr.loaded / xhr.total * 100) + '% loaded');
+            //console.log((xhr.loaded / xhr.total * 100) + '% loaded');
         },
         // Function called when download errors
         function (xhr) {
-            console.log('An error happened');
+            //console.log('An error happened');
         }
     );
 
 
+
+/*
+    var loader2 = new THREE.OBJMTLLoader();
+
+// load an obj / mtl resource pair
+    loader2.load(
+        // OBJ resource URL
+        "objects/truck/truck.obj",
+        // MTL resource URL
+        "objects/truck/truck.mtl",
+        // Function when both resources are loaded
+        function ( object ) {
+
+           // object.position.set(0, 0, 0);
+           // camera.position.set(0, 12, 0);
+           //
+            //camera.lookAt(new THREE.Vector3(0,0,0));
+            obj = object;
+            obj.scale.set(0.1,0.1,0.1);
+
+
+            var directionalLight = new THREE.DirectionalLight( 0xffffff, 0.5 );
+            directionalLight.position.set( 0, 1, 0 );
+            scene.add( directionalLight );
+
+
+
+            scene.add( obj );
+            //object.scale.set(0.01,0.01,0.01);
+            //scene.add( object );
+        },
+        // Function called when downloads progress
+        function ( xhr ) {
+            console.log( (xhr.loaded / xhr.total * 100) + '% Modelis uzsikrove' );
+        },
+        // Function called when downloads error
+        function ( xhr ) {
+            console.log( 'An error happened' );
+        }
+    );
+
+*/
+
+
+
+
+
+
+
+
+
+/*
     // KONTEINERIS
     loader.load(
         // resource URL
@@ -295,7 +366,7 @@ function init()
             console.log('An error happened');
         }
     );
-
+*/
 
     /////////////////
     // IMPORT MODEL//
@@ -312,13 +383,13 @@ function init()
         obj.position.z = -1100;
 
         obj.scale.set(500, 500, 500);
-     
+
         scene.add(obj);
     });
     */
 
 
-    /// 
+    ///
     ///  DEZES
     ///
 
@@ -329,6 +400,10 @@ function init()
     //for (i = 0; i < testSegments.length; i++) {
      //   deze.push(JSON.parse(testSegments[i]));
     //}
+
+
+
+
     // DEZES TEKSTUROS
     loader.load(
         // resource URL
@@ -354,13 +429,13 @@ function init()
                     //opacity: 0.5,
                     // overdraw: 0.5,
                     map: dynamicTexture[index].texture
-                    
+
 
                 });
                 // Dynamic texture
                 dynamicTexture[index].clear('white').drawText(''+deze[index].tipas, undefined, 128, 'black');
 
-                var geometry = new THREE.BoxGeometry(deze[index].x, deze[index].y, deze[index].z);
+                var geometry = new THREE.BoxGeometry((deze[index].x) / 1000, (deze[index].y) / 1000, (deze[index].z) / 1000 );
 
                 if (deze[index].tipas == 'Batonas') {
                     var materials = [new THREE.MeshBasicMaterial({ map: boxTexture}),
@@ -426,18 +501,18 @@ function init()
                     meshes[index] = new THREE.Mesh(geometry, material);
                 }
 
-                meshes[index].position.set(deze[index].posX, deze[index].posY, deze[index].posZ);
+                meshes[index].position.set(deze[index].posX / 1000, deze[index].posY / 1000, deze[index].posZ / 1000);
 
                 var edges = new THREE.EdgesHelper(meshes[index], 0x000000);
                 scene.add(edges);
                 scene.add(meshes[index]);
-                
+
             }
-            
+
         },
         // Function called when download progresses
         function (xhr) {
-            console.log((xhr.loaded / xhr.total * 100) + '% loaded');
+            console.log((xhr.loaded / xhr.total * 100) + '% DEZES loaded');
         },
         // Function called when download errors
         function (xhr) {
@@ -447,11 +522,11 @@ function init()
 
     //var light = new THREE.AmbientLight( 0x404040 ); // soft white light
     //scene.add( light );
-	
-    // GUI 
+
+    // GUI
 
     var gui = new dat.GUI();
-	 
+
     var params = {
         FullScreen: "",
         Slider: 100,
@@ -470,7 +545,7 @@ function init()
     };
 
     var text = new FizzyText();
-    
+
     gui.add(text, 'Fullscreen');
     //gui.add(text, 'speed', -5, 5);
    // gui.add(text, 'displayOutline');
@@ -490,34 +565,46 @@ function init()
 
 
 
-    window.onkeydown = checkKey;
-    
-}
+   // window.onkeydown = checkKey;
 
+
+}
+/*
 function checkKey(e) {
 
     var left = 37,
         up = 38,
         right = 39,
         down = 40,
-        increment = 500;
+        increment = 0.01;
     e = e || window.event;
 
     if (e.keyCode == up) {
-        camera.position.z -= increment;
+
+        for(var i = 0; i < 20; i++){
+            camera.position.z -= increment;
+        }
+
     }
     else if (e.keyCode == down) {
-        camera.position.z += increment;
+        for(var i = 0; i < 20; i++){
+            camera.position.z += increment;
+        }
     }
     else if (e.keyCode == left) {
-        camera.position.x -= increment;
+        for (var i = 0; i < 20; i++) {
+            camera.position.x -= increment;
+
+        }
     }
     else if (e.keyCode == right) {
+        for(var i = 0; i < 20; i++){
         camera.position.x += increment;
+        }
     }
 
 }
-
+*/
 function animate()
 {
     requestAnimationFrame( animate );
