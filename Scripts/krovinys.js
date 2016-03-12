@@ -19,7 +19,7 @@ function init() {
     scene = new THREE.Scene();
     // CAMERA
     var SCREEN_WIDTH = window.innerWidth, SCREEN_HEIGHT = window.innerHeight;
-    var VIEW_ANGLE = 45, ASPECT = SCREEN_WIDTH / SCREEN_HEIGHT, NEAR = 0.001, FAR = 2000000;
+    var VIEW_ANGLE = 45, ASPECT = SCREEN_WIDTH / SCREEN_HEIGHT, NEAR = 0.001, FAR = 5000;
     camera = new THREE.PerspectiveCamera(VIEW_ANGLE, ASPECT, NEAR, FAR);
     var light2 = new THREE.PointLight(0xffffff);
     scene.add(camera);
@@ -40,7 +40,38 @@ function init() {
     THREEx.FullScreen.bindKey({charCode: 'm'.charCodeAt(0)});
     // CONTROLS
     controls = new THREE.OrbitControls(camera, renderer.domElement);
-    controls.addEventListener('change', render);
+    controls.minDistance =  9;
+    controls.maxDistance = 30;
+    //controls.rotateSpeed = 1.0;
+    //controls.zoomSpeed = 1.2;
+    //controls.panSpeed = 0.2;
+
+    controls.center.set(0,0,5);
+
+
+
+    controls.maxPolarAngle = Math.PI/2;
+    //controls.noZoom = false;
+    //controls.noPan = false;
+
+   // controls.staticMoving = false;
+   // controls.dynamicDampingFactor = 0.3;
+
+
+
+    controls.keys = [ 65, 83, 68 ]; // [ rotateKey, zoomKey, panKey ]
+
+
+
+
+
+
+
+
+
+
+
+
     // STATS
     stats = new Stats();
     stats.domElement.style.position = 'absolute';
@@ -70,7 +101,7 @@ function init() {
                 map: texture,
                 side: THREE.DoubleSide
             });
-            var geometry = new THREE.PlaneGeometry(20, 40, 1, 1);
+            var geometry = new THREE.PlaneGeometry(20, 80, 1, 1);
             var floor = new THREE.Mesh(geometry, material);
             floor.position.y = 0;
             floor.rotation.x = Math.PI / 2;
@@ -99,7 +130,7 @@ function init() {
                 map: texture,
                 side: THREE.DoubleSide
             });
-            var geometry = new THREE.PlaneGeometry(40, 40, 10, 10);
+            var geometry = new THREE.PlaneGeometry(80, 80, 10, 10);
             var grass = new THREE.Mesh(geometry, material);
             grass.position.y = -0.2;
             grass.rotation.x = Math.PI / 2;
@@ -160,7 +191,7 @@ function init() {
             // var imagePrefix = "images/sky/";
             // var directions = ["posx", "negx", "posy", "negy", "posz", "negz"];
             // var imageSuffix = ".jpg";
-            var skyGeometry = new THREE.CubeGeometry(40, 40, 40);
+            var skyGeometry = new THREE.CubeGeometry(80, 80, 80);
             texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
             texture.repeat.set(2, 5);
 
@@ -661,40 +692,25 @@ function init() {
         skyBox.visible = a;
     });
 
-    window.onkeydown = checkKey;
-}
-function checkKey(e) {
 
-    var left = 37,
-        up = 38,
-        right = 39,
-        down = 40,
-        increment = 0.01;
-    e = e || window.event;
 
-    if (e.keyCode == up) {
-            camera.position.z -= increment;
-    }
-    else if (e.keyCode == down) {
-            camera.position.z += increment;
-    }
-    else if (e.keyCode == left) {
-            camera.position.x -= increment;
-    }
-    else if (e.keyCode == right) {
-        camera.position.x += increment;
-    }
+
 }
+
 function animate()
 {
     requestAnimationFrame( animate );
     render();
     update();
 }
+
+
+
 function update()
 {
-    keyboard.update();
+    //window.onkeydown = checkKey;
     var delta = clock.getDelta();
+    keyboard.update();
     controls.update(delta);
     stats.update();
 }
