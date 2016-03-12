@@ -10,6 +10,7 @@ var container,
 var clock = new THREE.Clock();
 var keyboard = new KeyboardState();
 var spalva = '#0059ff';
+
 init();
 animate();
 
@@ -46,9 +47,7 @@ function init() {
     //controls.zoomSpeed = 1.2;
     //controls.panSpeed = 0.2;
 
-    controls.center.set(0,0,5);
-
-
+    controls.center.set(0,4,-8);
 
     controls.maxPolarAngle = Math.PI/2;
     //controls.noZoom = false;
@@ -60,17 +59,6 @@ function init() {
 
 
     controls.keys = [ 65, 83, 68 ]; // [ rotateKey, zoomKey, panKey ]
-
-
-
-
-
-
-
-
-
-
-
 
     // STATS
     stats = new Stats();
@@ -85,6 +73,71 @@ function init() {
     var light3 = new THREE.AmbientLight(0xffffff);
     light3.position.set(0, 100, 0).normalize();
     scene.add(light3);
+
+
+    // FUROS MODELIO IKROVIMAS
+    var DAELoader = new THREE.ColladaLoader();
+    DAELoader.options.convertUpAxis = true;
+    DAELoader.load( './Models/TruckBlue/model.dae', function ( collada ) {
+        var model = collada.scene;
+            model.scale.x = model.scale.y = model.scale.z = 0.05;
+
+        model.rotateX = Math.PI / 2;
+        model.updateMatrix();
+            scene.add(model);
+        },
+        function ( xhr ) {
+            //console.log( (xhr.loaded / xhr.total * 100) + '% FURA loaded' );
+        }
+    );
+
+
+     var DAELoader2 = new THREE.ColladaLoader();
+     DAELoader2.options.convertUpAxis = true;
+     DAELoader2.load( './Models/TruckBlue/priekaba.dae', function ( collada ) {
+         var model = collada.scene;
+         model.scale.x = model.scale.y = model.scale.z = 0.042;
+         model.rotateY(Math.PI);
+         model.position.set(4.3,0,-31);
+         model.updateMatrix();
+     scene.add(model);
+     },
+     function ( xhr ) {
+     //console.log( (xhr.loaded / xhr.total * 100) + '% PRIEKABA loaded' );
+     }
+     );
+
+
+
+
+
+
+
+
+
+
+//////////////////////////////////////////////////////////////////////////////////
+//		comment								//
+//////////////////////////////////////////////////////////////////////////////////
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     // FLOOR
     var loader = new THREE.TextureLoader();
     // load a resource
@@ -153,7 +206,7 @@ function init() {
         function (texture) {
             // do something with the texture
 
-            var skyGeometry = new THREE.CubeGeometry(4, 0.5, 12);
+            var skyGeometry = new THREE.CubeGeometry(4, 0.5, 13);
             texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
             texture.repeat.set(1, 4);
 
@@ -167,7 +220,7 @@ function init() {
             var skyMaterial = new THREE.MeshFaceMaterial(materialArray);
             var skyBox = new THREE.Mesh(skyGeometry, skyMaterial);
 
-            skyBox.position.set(0, 2, 7);
+            skyBox.position.set(2, 2.3, -8);
 
             scene.add(skyBox);
 
@@ -218,7 +271,7 @@ function init() {
             //console.log('An error happened');
         }
     );
-
+/*
     var loaderq = new THREE.OBJMTLLoader();
     loaderq.load("Models/Truck/Semi_truck.obj",
         "Models/Truck/Semi_truck.mtl",
@@ -249,7 +302,7 @@ function init() {
         function (xhr) {
             console.log('An error happened');
         }
-    );
+    );*/
     var skyBox;
     // KONTEINERIS
     loader.load(
@@ -261,9 +314,9 @@ function init() {
             // var imagePrefix = "images/sky/";
             // var directions = ["posx", "negx", "posy", "negy", "posz", "negz"];
             // var imageSuffix = ".jpg";
-            var skyGeometry = new THREE.CubeGeometry(4, 4, 12);
+            var skyGeometry = new THREE.CubeGeometry(4, 4, 13);
             texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
-            texture.repeat.set(1, 1);
+            texture.repeat.set(3, 1);
             var materialArray = [];
             for (var i = 0; i < 6; i++)
                 materialArray.push(new THREE.MeshBasicMaterial({
@@ -275,10 +328,10 @@ function init() {
             // var skyGeometry = new THREE.CubeGeometry(10000, 10000, 60000);
             var skyMaterial = new THREE.MeshFaceMaterial(materialArray);
             skyBox = new THREE.Mesh(skyGeometry, skyMaterial);
-
-            skyBox.position.x = 0;
-            skyBox.position.z = 7;
-            skyBox.position.y = 4.2;
+            //4.3,0,-31
+            skyBox.position.x = 2;
+            skyBox.position.z = -8;
+            skyBox.position.y = 4.5;
 
             scene.add(skyBox);
         },
@@ -291,6 +344,16 @@ function init() {
             console.log('An error happened');
         }
     );
+
+
+
+
+
+
+
+
+
+
     ///
     ///  DEZES
     ///
@@ -621,22 +684,46 @@ function init() {
                 var edges = new THREE.EdgesHelper(meshes[index], 0x000000);
                 scene.add(edges);
 
-                meshes[index].position.x -= 0.5;
-                meshes[index].position.y += 3;
-                meshes[index].position.z += 2;
+                // DEZIU POZICIJA KONTEINERYJE
+                meshes[index].position.x += 1.6;
+                meshes[index].position.y += 3.2;
+                meshes[index].position.z += -13;
                 scene.add(meshes[index]);
             }
 
         },
         // Function called when download progresses
         function (xhr) {
-            console.log((xhr.loaded / xhr.total * 100) + '% DEZES loaded');
+           // console.log((xhr.loaded / xhr.total * 100) + '% DEZES loaded');
         },
         // Function called when download errors
         function (xhr) {
             console.log('An error happened');
         }
     );
+
+
+
+
+/*
+    var loaderccc = new THREE.OBJLoader();
+
+// load a resource
+    loaderccc.load(
+        // resource URL
+        'Models/TruckBlue/model/m.json',
+        // Function when resource is loaded
+        function ( object ) {
+            scene.add( object );
+        }
+    );
+*/
+
+
+
+
+
+
     // GUI
 
     var gui = new dat.GUI();
@@ -691,14 +778,11 @@ function init() {
     f3.add(text, 'SuPriekaba').onChange(function (a) {
         skyBox.visible = a;
     });
-
-
-
-
 }
 
 function animate()
 {
+
     requestAnimationFrame( animate );
     render();
     update();
@@ -708,6 +792,7 @@ function animate()
 
 function update()
 {
+
     //window.onkeydown = checkKey;
     var delta = clock.getDelta();
     keyboard.update();
