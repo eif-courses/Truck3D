@@ -16,13 +16,37 @@ animate();
 
 // FUNCTIONS
 function init() {
+
+    // FUROS MODELIO IKROVIMAS
+    var DAELoader = new THREE.ColladaLoader();
+    DAELoader.options.convertUpAxis = true;
+    DAELoader.load( './Models/TruckBlue/model.dae', function ( collada ) {
+            var model = collada.scene;
+            model.scale.x = model.scale.y = model.scale.z = 0.05;
+
+            model.position.y = 0;
+            model.position.x = -5.5;
+            model.position.z = 2.5;
+            model.rotateX = Math.PI / 2;
+            model.updateMatrix();
+            scene.add(model);
+        },
+        function ( xhr ) {
+            //console.log( (xhr.loaded / xhr.total * 100) + '% FURA loaded' );
+        }
+    );
+
+
+
+
+
     // SCENE
     scene = new THREE.Scene();
     // CAMERA
     var SCREEN_WIDTH = window.innerWidth, SCREEN_HEIGHT = window.innerHeight;
     var VIEW_ANGLE = 45, ASPECT = SCREEN_WIDTH / SCREEN_HEIGHT, NEAR = 0.001, FAR = 5000;
     camera = new THREE.PerspectiveCamera(VIEW_ANGLE, ASPECT, NEAR, FAR);
-    var light2 = new THREE.PointLight(0xffffff);
+    var light2 = new THREE.DirectionalLight(0xffffff);
     scene.add(camera);
     camera.add(light2);
     camera.position.set(12, 8, -10);
@@ -42,7 +66,8 @@ function init() {
     // CONTROLS
     controls = new THREE.OrbitControls(camera, renderer.domElement);
     controls.minDistance =  9;
-    controls.maxDistance = 30;
+    controls.minDistance =  9;
+    controls.maxDistance = 40;
     //controls.rotateSpeed = 1.0;
     //controls.zoomSpeed = 1.2;
     //controls.panSpeed = 0.2;
@@ -70,45 +95,10 @@ function init() {
     var light = new THREE.DirectionalLight(0xffffff);
     light.position.set(0, 20, 0).normalize();
     scene.add(light);
-    var light3 = new THREE.AmbientLight(0xffffff);
+   /* var light3 = new THREE.AmbientLight(0xffffff);
     light3.position.set(0, 100, 0).normalize();
     scene.add(light3);
-
-
-    // FUROS MODELIO IKROVIMAS
-    var DAELoader = new THREE.ColladaLoader();
-    DAELoader.options.convertUpAxis = true;
-    DAELoader.load( './Models/TruckBlue/model.dae', function ( collada ) {
-        var model = collada.scene;
-            model.scale.x = model.scale.y = model.scale.z = 0.05;
-
-        model.rotateX = Math.PI / 2;
-        model.updateMatrix();
-            scene.add(model);
-        },
-        function ( xhr ) {
-            //console.log( (xhr.loaded / xhr.total * 100) + '% FURA loaded' );
-        }
-    );
-
-
-     var DAELoader2 = new THREE.ColladaLoader();
-     DAELoader2.options.convertUpAxis = true;
-     DAELoader2.load( './Models/TruckBlue/priekaba.dae', function ( collada ) {
-         var model = collada.scene;
-         model.scale.x = model.scale.y = model.scale.z = 0.042;
-         model.rotateY(Math.PI);
-         model.position.set(4.3,0,-31);
-         model.updateMatrix();
-     scene.add(model);
-     },
-     function ( xhr ) {
-     //console.log( (xhr.loaded / xhr.total * 100) + '% PRIEKABA loaded' );
-     }
-     );
-
-
-
+*/
 
 
 
@@ -119,21 +109,6 @@ function init() {
 //////////////////////////////////////////////////////////////////////////////////
 //		comment								//
 //////////////////////////////////////////////////////////////////////////////////
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -156,7 +131,7 @@ function init() {
             });
             var geometry = new THREE.PlaneGeometry(20, 80, 1, 1);
             var floor = new THREE.Mesh(geometry, material);
-            floor.position.y = 0;
+            floor.position.y = 0.02;
             floor.rotation.x = Math.PI / 2;
             floor.position.x -= 8;
             scene.add(floor);
@@ -206,7 +181,7 @@ function init() {
         function (texture) {
             // do something with the texture
 
-            var skyGeometry = new THREE.CubeGeometry(4, 0.5, 13);
+            var skyGeometry = new THREE.CubeGeometry(5, 0.5, 19);
             texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
             texture.repeat.set(1, 4);
 
@@ -220,7 +195,7 @@ function init() {
             var skyMaterial = new THREE.MeshFaceMaterial(materialArray);
             var skyBox = new THREE.Mesh(skyGeometry, skyMaterial);
 
-            skyBox.position.set(2, 2.3, -8);
+            skyBox.position.set(1.8, 2.3, -10);
 
             scene.add(skyBox);
 
@@ -271,38 +246,8 @@ function init() {
             //console.log('An error happened');
         }
     );
-/*
-    var loaderq = new THREE.OBJMTLLoader();
-    loaderq.load("Models/Truck/Semi_truck.obj",
-        "Models/Truck/Semi_truck.mtl",
-        function (object) {
 
-            var obj = object;
-            obj.scale.set(0.04, 0.04, 0.04);
-            var texture = loader.load('images/kelias.jpg');
 
-            obj.traverse(function (child) {
-                if (child instanceof THREE.Mesh) {
-                    child.material.map = texture;
-                }
-            });
-            var obj2 = object.clone();
-            obj2.position.y = -4.5;
-            obj2.rotation.x = -1.6;
-            obj2.position.z = 12;
-
-            scene.add(obj2);
-            scene.add(obj);
-        },
-        // Function called when downloads progress
-        function (xhr) {
-            console.log((xhr.loaded / xhr.total * 100) + '% Modelis uzsikrove');
-        },
-        // Function called when downloads error
-        function (xhr) {
-            console.log('An error happened');
-        }
-    );*/
     var skyBox;
     // KONTEINERIS
     loader.load(
@@ -314,7 +259,7 @@ function init() {
             // var imagePrefix = "images/sky/";
             // var directions = ["posx", "negx", "posy", "negy", "posz", "negz"];
             // var imageSuffix = ".jpg";
-            var skyGeometry = new THREE.CubeGeometry(4, 4, 13);
+            var skyGeometry = new THREE.CubeGeometry(5, 4, 19);
             texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
             texture.repeat.set(3, 1);
             var materialArray = [];
@@ -323,16 +268,19 @@ function init() {
                     map: texture,
                     side: THREE.FrontSide,
                     transparent: true,
-                    opacity: 0.7
+                    opacity: 0.2
                 }));
             // var skyGeometry = new THREE.CubeGeometry(10000, 10000, 60000);
             var skyMaterial = new THREE.MeshFaceMaterial(materialArray);
             skyBox = new THREE.Mesh(skyGeometry, skyMaterial);
             //4.3,0,-31
-            skyBox.position.x = 2;
-            skyBox.position.z = -8;
+            skyBox.position.x = 1.8;
+            skyBox.position.z = -10;
             skyBox.position.y = 4.5;
 
+            var helper = new THREE.EdgesHelper( skyBox, 0x00ff00 );
+
+            scene.add(helper);
             scene.add(skyBox);
         },
         // Function called when download progresses
@@ -390,7 +338,7 @@ function init() {
         "posY": 1100,
         "posZ": 1200,
         "tipas": "Batonas"
-    }, {"x": 1000, "y": 1100, "z": 1200, "posX": 0, "posY": 0, "posZ": 2400, "tipas": "Batonas"}, {
+    }, {"x": 1000, "y": 1100, "z": 1200, "posX": 0 , "posY": 0, "posZ": 2400, "tipas": "Batonas"}, {
         "x": 1000,
         "y": 1100,
         "z": 1200,
@@ -596,7 +544,7 @@ function init() {
             texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
             texture.repeat.set(1, 1);
 
-            var boxTexture = loader.load('images/box.jpg');
+            var boxTexture = loader.load('images/paper.jpg');
             var box2Texture = loader.load('images/box2.jpg');
             var meshes = [];
             var dynamicTexture = [];
@@ -617,61 +565,62 @@ function init() {
                 var geometry = new THREE.BoxGeometry((deze[index].x) / 1000, (deze[index].y) / 1000, (deze[index].z) / 1000);
 
                 if (deze[index].tipas == 'Batonas') {
-                    var materials = [new THREE.MeshBasicMaterial({map: boxTexture}),
+                    dynamicTexture[index].clear('red').drawText('' + deze[index].tipas, undefined, 128, 'black');
+                    var materials = [new THREE.MeshBasicMaterial({map: dynamicTexture[index].texture}),
                         new THREE.MeshBasicMaterial({
-                            map: boxTexture
+                            map: dynamicTexture[index].texture
                         }),
                         new THREE.MeshBasicMaterial({
                             map: dynamicTexture[index].texture
                         }),
                         new THREE.MeshBasicMaterial({
-                            map: boxTexture
+                            map: dynamicTexture[index].texture
+                }),
+                        new THREE.MeshBasicMaterial({
+                            map: dynamicTexture[index].texture
                         }),
                         new THREE.MeshBasicMaterial({
-                            map: boxTexture
-                        }),
-                        new THREE.MeshBasicMaterial({
-                            map: boxTexture
+                            map: dynamicTexture[index].texture
                         })];
                     meshes[index] = new THREE.Mesh(geometry, new THREE.MeshFaceMaterial(materials));
                 }
                 else if (deze[index].tipas == 'Cukrus') {
-                    var materials = [new THREE.MeshBasicMaterial({map: box2Texture}),
+                    dynamicTexture[index].clear('yellow').drawText('' + deze[index].tipas, undefined, 128, 'black');
+                    var materials = [new THREE.MeshBasicMaterial({map: dynamicTexture[index].texture}),
                         new THREE.MeshBasicMaterial({
-
-                            map: box2Texture
+                            map: dynamicTexture[index].texture
                         }),
                         new THREE.MeshBasicMaterial({
                             map: dynamicTexture[index].texture
                         }),
                         new THREE.MeshBasicMaterial({
-                            map: box2Texture
+                            map: dynamicTexture[index].texture
                         }),
                         new THREE.MeshBasicMaterial({
-                            map: box2Texture
+                            map: dynamicTexture[index].texture
                         }),
                         new THREE.MeshBasicMaterial({
-                            map: box2Texture
+                            map: dynamicTexture[index].texture
                         })];
                     meshes[index] = new THREE.Mesh(geometry, new THREE.MeshFaceMaterial(materials));
                 }
                 else if (deze[index].tipas == 'Duona') {
-                    var materials = [new THREE.MeshBasicMaterial({map: texture}),
+                    dynamicTexture[index].clear('green').drawText('' + deze[index].tipas, undefined, 128, 'black');
+                    var materials = [new THREE.MeshBasicMaterial({map: dynamicTexture[index].texture}),
                         new THREE.MeshBasicMaterial({
-
-                            map: texture
+                            map: dynamicTexture[index].texture
                         }),
                         new THREE.MeshBasicMaterial({
                             map: dynamicTexture[index].texture
                         }),
                         new THREE.MeshBasicMaterial({
-                            map: texture
+                            map: dynamicTexture[index].texture
                         }),
                         new THREE.MeshBasicMaterial({
-                            map: texture
+                            map: dynamicTexture[index].texture
                         }),
                         new THREE.MeshBasicMaterial({
-                            map: texture
+                            map: dynamicTexture[index].texture
                         })];
                     meshes[index] = new THREE.Mesh(geometry, new THREE.MeshFaceMaterial(materials));
                 }
@@ -687,7 +636,7 @@ function init() {
                 // DEZIU POZICIJA KONTEINERYJE
                 meshes[index].position.x += 1.6;
                 meshes[index].position.y += 3.2;
-                meshes[index].position.z += -13;
+                meshes[index].position.z += -15;
                 scene.add(meshes[index]);
             }
 
@@ -701,29 +650,7 @@ function init() {
             console.log('An error happened');
         }
     );
-
-
-
-
-/*
-    var loaderccc = new THREE.OBJLoader();
-
-// load a resource
-    loaderccc.load(
-        // resource URL
-        'Models/TruckBlue/model/m.json',
-        // Function when resource is loaded
-        function ( object ) {
-            scene.add( object );
-        }
-    );
-*/
-
-
-
-
-
-
+    
     // GUI
 
     var gui = new dat.GUI();
@@ -792,6 +719,7 @@ function animate()
 
 function update()
 {
+
 
     //window.onkeydown = checkKey;
     var delta = clock.getDelta();
